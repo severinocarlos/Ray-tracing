@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 
-def cli() -> list():
+def cli() -> tuple():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-j', '--json-file', type=str, required=True,
@@ -11,15 +11,23 @@ def cli() -> list():
                         help='Digite a versão')
 
     arg = parser.parse_args()
-    _path = arg.json_file
+    _file = arg.json_file
     _version =  arg.version
 
-    return [_path, _version]
+    return (_file, _version)
 
-if __name__ == "__main__":
-    path, version = cli()
+def readinfo(_file: str) -> dict():
     directory = os.getcwd()
-    path = f'{directory}\\items\\{path}'
+    path = f'{directory}\\images-info\\{_file}'
 
     with open(path, 'r') as json_file:
-        info = json.load(json_file)
+        _info = json.load(json_file)
+    
+    return _info
+
+if __name__ == "__main__":
+    file, version = cli()
+    info = readinfo(file)
+
+    print(info)
+    
