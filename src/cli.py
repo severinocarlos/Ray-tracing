@@ -6,9 +6,7 @@ def cli() -> tuple():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-j', '--json-file', type=str, required=True,
-                        help='Escreve o json correpondente a imagem que será processada')
-    parser.add_argument('-v', '--version', type=int, required=True,
-                        help='Digite a versão')
+                        help='Escreve o arquivo json correpondente a imagem que será processada')
 
     arg = parser.parse_args()
     _file = arg.json_file
