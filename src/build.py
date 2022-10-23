@@ -14,7 +14,7 @@ class Build:
         self.BACKGROUND_COLOR: list = scene_dict['background_color']
         self.OBJECTS: list = scene_dict['objects']
         
-    def rayDirection(self):
+    def buildRays(self):
         # building the orthonomal base
         w: tuple = op.normalize(op.ExtractVector(*self.CAM_EYE, *self.CAM_LOOK_AT))
         u: tuple = op.normalize(op.crossProduct(*self.UP_VECTOR, *w))
