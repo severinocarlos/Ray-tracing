@@ -27,6 +27,4 @@ if __name__ == "__main__":
     file = cli()
     scene_info = readinfo(file)
 
-    processing = Build(scene_info)
-
-    
+    pixel_screen = Build(scene_info)
