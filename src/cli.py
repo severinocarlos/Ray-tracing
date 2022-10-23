@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+from build import Build
 
 def cli() -> str:
     parser = argparse.ArgumentParser()
@@ -18,13 +19,14 @@ def readinfo(_file: str) -> dict():
     path = f'{directory}\\images-info\\{_file}'
 
     with open(path, 'r') as json_file:
-        _info = json.load(json_file)
+        info = json.load(json_file)
     
-    return _info
+    return info
 
 if __name__ == "__main__":
     file = cli()
-    info = readinfo(file)
+    scene_info = readinfo(file)
 
-    print(info)
+    processing = Build(scene_info)
+
     
