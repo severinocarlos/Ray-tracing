@@ -1,11 +1,11 @@
 from cmath import sqrt
 
-def ExtractVector(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int) -> tuple:
+def extractVector(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int) -> tuple:
     return (x1 - x2, 
             y1 - y2,
             z1 - z2)
 
-def EscalarProd(e: int, v: tuple) -> tuple:
+def escalarProd(e: int, v: tuple) -> tuple:
     x, y, z =  v
     return (e*x, e*y, e*z)
 
