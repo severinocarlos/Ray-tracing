@@ -11,7 +11,7 @@ class Build:
         self.UP_VECTOR: list = Vector(*scene_dict['up'])
         self.BACKGROUND_COLOR: list = scene_dict['background_color']
         self.OBJECTS: list = scene_dict['objects']
-        print(self.CAM_EYE)
+        
     def rayBuild(self):
         # 1 construir a base ortonomal
         # 2 construir todos os rais
