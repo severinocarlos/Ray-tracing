@@ -21,17 +21,17 @@ class Build:
         v: tuple = op.crossProduct(*w, *u) # não é necessário normalizar
 
         # calculanting the screen center
-        screen_center = op.extractVector(self.CAM_EYE, op.escalarProd(self.DISTANCE, self.w)) # C = E - d W
+        screen_center = op.extractVector(self.CAM_EYE, op.escalarProd(self.DISTANCE, w)) # C = E - d W
 
         # calculating Q00
-        n = 0.5*self.PIXEL_SIZE*self.HEIGHT
-        m = 0.5*self.PIXEL_SIZE*self.WIDTH
+        n = 0.5 * self.PIXEL_SIZE * self.HEIGHT
+        m = 0.5 * self.PIXEL_SIZE * self.WIDTH
         xc, yc, zc = screen_center
-        xh, yh, zh = op.escalarProd(n-0.5*self.PIXEL_SIZE, v)
-        xw, yw, zw = op.escalarProd(m-0.5*self.PIXEL_SIZE, u)
+        xh, yh, zh = op.escalarProd(n - 0.5 * self.PIXEL_SIZE, v)
+        xw, yw, zw = op.escalarProd(m - 0.5 * self.PIXEL_SIZE, u)
         x0, y0, z0 = (xc+xh, yc+yh, zc+zh)
 
-        pixel_center_0 = (x0-xw, y0-yw, z0-zw) # Q00 = C + 1/2*s(n-1)*v - 1/2*s(m-1)*u
+        pixel_center_0 = (x0 - xw, y0 - yw, z0 - zw) # Q00 = C + 1/2*s(n-1)*v - 1/2*s(m-1)*u
 
         # computing the rays direction
         for i in range(self.HEIGHT):

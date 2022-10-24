@@ -9,7 +9,7 @@ def escalarProd(e: int, v: tuple) -> tuple:
     x, y, z =  v
     return (e*x, e*y, e*z)
 
-def norm(x: int, y: int, z: int) -> tuple:
+def norm(x: int, y: int, z: int) -> int | float:
     return sqrt(x**2 + y**2 + z**2)
 
 def normalize(v: tuple) -> tuple:
@@ -20,4 +20,4 @@ def normalize(v: tuple) -> tuple:
 def crossProduct(x1: int, y1: int, z1: int, x2: int, y2: int, z2: int) -> tuple:
     return (x1 * z2 - z1 * y2,
             z1 * x2 - x1 * z2,
-            x1 * y2 - y1 - x2)
+            x1 * y2 - y1 * x2)
