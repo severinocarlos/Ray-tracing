@@ -2,7 +2,6 @@ import argparse
 import json
 import os
 from build import Build
-from modules.scene import Scene
 
 def cli() -> str:
     parser = argparse.ArgumentParser()
@@ -27,3 +26,4 @@ if __name__ == "__main__":
     file: str = cli()
     scene_info: dict = readinfo(file)   
     pixel_screen = Build(scene_info)
+    pixel_screen.buildRays()

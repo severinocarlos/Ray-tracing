@@ -1,5 +1,6 @@
+from sqlite3 import enable_shared_cache
 import numpy
-from modules.operations import extractVector, escalarProd, normalize, norm, crossProduct
+from modules.operations import *
 
 class Build:
     def __init__(self, scene_dict: dict) -> None:
@@ -15,25 +16,25 @@ class Build:
         
     def buildRays(self):
         # building the orthonomal base
-        w: tuple = normalize(extractVector(*self.CAM_EYE, *self.CAM_LOOK_AT))
+        w: tuple = normalize(sub(*self.CAM_EYE, *self.CAM_LOOK_AT))
         u: tuple = normalize(crossProduct(*self.UP_VECTOR, *w))
         v: tuple = crossProduct(*w, *u) # não é necessário normalizar
 
         # calculanting the screen center
-        screen_center = extractVector(self.CAM_EYE, escalarProd(self.DISTANCE, w)) # C = E - d W
+        screen_center = sub(*self.CAM_EYE, *escalarProd(self.DISTANCE, w)) # C = E - d W
 
-        # calculating Q00
-        n = 0.5 * self.PIXEL_SIZE * self.HEIGHT
-        m = 0.5 * self.PIXEL_SIZE * self.WIDTH
-        xc, yc, zc = screen_center
-        xh, yh, zh = escalarProd(n - 0.5 * self.PIXEL_SIZE, v)
-        xw, yw, zw = escalarProd(m - 0.5 * self.PIXEL_SIZE, u)
-        x0, y0, z0 = (xc + xh, yc + yh, zc + zh)
+        # calculating Q00 -> C + 1/2*s(n-1)*v - 1/2*s(m-1)*u
 
-        pixel_center_0 = (x0 - xw, y0 - yw, z0 - zw) # Q[0][0] = C + 1/2*s(n-1)*v - 1/2*s(m-1)*u
+        aux_sub = sub(*escalarProd((1/2*self.PIXEL_SIZE*(self.HEIGHT-1)), v), *escalarProd((1/2*self.PIXEL_SIZE*(self.WIDTH-1)), u))
+        
+        pixel_center_00 = sum(*screen_center, *aux_sub)
 
         # computing the rays direction
         for i in range(self.HEIGHT):
             for j in range(self.WIDTH):
-                ...
+                aux_sum = escalarProd(self.PIXEL_SIZE, sub(*escalarProd(j, u), *escalarProd(i, v)))
+                current_position = sum(*pixel_center_00, *aux_sum)
+                ray_direction = normalize(sub(*self.CAM_EYE, *current_position))
+                # chamar ray_tracing()
 
+    # def ray_tracing(self):
