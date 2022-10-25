@@ -1,5 +1,5 @@
-import numpy
-from modules.operations import *
+import numpy as np
+from math import hypot
 
 class Build:
     def __init__(self, scene_dict: dict) -> None:
@@ -14,26 +14,34 @@ class Build:
         self.OBJECTS: list = scene_dict['objects']
         
     def buildRays(self):
+        cam_eye = np.array(self.CAM_EYE)
+        cam_look_at = np.array(self.CAM_LOOK_AT)
+        up_vector = np.array(self.UP_VECTOR)
+        distance = np.array(self.DISTANCE)
+        
+        norm = lambda x, y, z : hypot(x,y,z)
+        normalize = lambda a, b: a / b
+
         # building the orthonomal base
-        w: tuple = normalize(sub(*self.CAM_EYE, *self.CAM_LOOK_AT))
-        u: tuple = normalize(crossProduct(*self.UP_VECTOR, *w))
-        v: tuple = crossProduct(*w, *u) # não é necessário normalizar
+        w = cam_eye - cam_look_at
+        w = normalize(w, norm(*w))
+        u = np.cross(up_vector, w)
+        u = normalize(u, norm(*u))
+        v = np.cross(w,u)
 
         # calculanting the screen center
-        screen_center = sub(*self.CAM_EYE, *escalarProd(self.DISTANCE, w)) # C = E - d W
-
-        # calculating Q00 -> C + 1/2 * s(n-1) * v - 1/2*s(m-1) * u
-        aux_sub = sub(*escalarProd((1/2 * self.PIXEL_SIZE * (self.HEIGHT - 1)), v),
-                      *escalarProd((1/2 * self.PIXEL_SIZE * (self.WIDTH - 1)), u))
-        pixel_center_00 = sum(*screen_center, *aux_sub)
-
+        screen_center = cam_eye - distance * w
+        
+        # calculating Q[0][0] = C + (1/2 * s(n-1) * v) - (1/2 * s(m-1) * u)
+        pixel_center_00 = screen_center + (1/2 * self.PIXEL_SIZE * (self.HEIGHT-1) * v) \
+                                        - (1/2 * self.PIXEL_SIZE * (self.WIDTH-1) * u)
+        
         # computing the rays direction
         for i in range(self.HEIGHT):
             for j in range(self.WIDTH):
-                aux_sum = escalarProd(self.PIXEL_SIZE, sub(*escalarProd(j, u), *escalarProd(i, v)))
-                current_position = sum(*pixel_center_00, *aux_sum)
-                ray_direction = normalize(sub(*self.CAM_EYE, *current_position))
-                # chamar ray_tracing()
-
+                current_position = pixel_center_00 + self.PIXEL_SIZE * (j * u - i * v)
+                ray_direction = cam_eye - current_position
+                ray_direction = normalize(ray_direction, norm(*ray_direction))
+                
     def ray_tracing(self):
         ...
