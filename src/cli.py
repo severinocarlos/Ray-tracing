@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 from build import Build
+from modules.scene import Scene
 
 def cli() -> str:
     parser = argparse.ArgumentParser()
@@ -17,14 +18,12 @@ def cli() -> str:
 def readinfo(_file: str) -> dict():
     directory = os.getcwd()
     path = f'{directory}\\images-info\\{_file}'
-
     with open(path, 'r') as json_file:
         info = json.load(json_file)
     
     return info
 
 if __name__ == "__main__":
-    file = cli()
-    scene_info = readinfo(file)
-
+    file: str = cli()
+    scene_info: dict = readinfo(file)   
     pixel_screen = Build(scene_info)
