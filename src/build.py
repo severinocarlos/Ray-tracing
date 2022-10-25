@@ -1,4 +1,3 @@
-from sqlite3 import enable_shared_cache
 import numpy
 from modules.operations import *
 
@@ -23,10 +22,9 @@ class Build:
         # calculanting the screen center
         screen_center = sub(*self.CAM_EYE, *escalarProd(self.DISTANCE, w)) # C = E - d W
 
-        # calculating Q00 -> C + 1/2*s(n-1)*v - 1/2*s(m-1)*u
-
-        aux_sub = sub(*escalarProd((1/2*self.PIXEL_SIZE*(self.HEIGHT-1)), v), *escalarProd((1/2*self.PIXEL_SIZE*(self.WIDTH-1)), u))
-        
+        # calculating Q00 -> C + 1/2 * s(n-1) * v - 1/2*s(m-1) * u
+        aux_sub = sub(*escalarProd((1/2 * self.PIXEL_SIZE * (self.HEIGHT - 1)), v),
+                      *escalarProd((1/2 * self.PIXEL_SIZE * (self.WIDTH - 1)), u))
         pixel_center_00 = sum(*screen_center, *aux_sub)
 
         # computing the rays direction
@@ -37,4 +35,5 @@ class Build:
                 ray_direction = normalize(sub(*self.CAM_EYE, *current_position))
                 # chamar ray_tracing()
 
-    # def ray_tracing(self):
+    def ray_tracing(self):
+        ...
