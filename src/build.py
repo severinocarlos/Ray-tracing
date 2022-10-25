@@ -1,6 +1,6 @@
 import numpy as np
 from math import hypot
-from ray import Ray
+from modules.ray import Ray
 
 class Build:
     def __init__(self, scene_dict: dict) -> None:
@@ -13,6 +13,7 @@ class Build:
         self.UP_VECTOR: list = scene_dict['up']
         self.BACKGROUND_COLOR: list = scene_dict['background_color']
         self.OBJECTS: list = scene_dict['objects']
+        self.objs: list = scene_dict['object_list']
         
     def buildRays(self):
         cam_eye = np.array(self.CAM_EYE)
@@ -36,6 +37,7 @@ class Build:
         # calculating Q[0][0] = C + (1/2 * s(n-1) * v) - (1/2 * s(m-1) * u)
         pixel_center_00 = screen_center + (1/2 * self.PIXEL_SIZE * (self.HEIGHT-1) * v) \
                                         - (1/2 * self.PIXEL_SIZE * (self.WIDTH-1) * u)
+
         
         # computing the rays direction
         for i in range(self.HEIGHT):
@@ -44,10 +46,14 @@ class Build:
                 ray_direction = cam_eye - current_position
                 ray_direction = normalize(ray_direction, norm(*ray_direction))
                 ray = Ray(ray_direction, cam_eye)
-
+                self.intersection(ray)
     def ray_tracing(self):
         ...
 
 
-    def intersect(self):
-        ...
+    def intersection(self, ray: Ray):
+        
+        for objects in self.objs:
+            print(objects)
+            distance = objects.intersection(ray)
+            return distance

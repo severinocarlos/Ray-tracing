@@ -1,20 +1,18 @@
 from math import sqrt, inf
-from ray import Ray
+from modules.ray import Ray
 import numpy as np
 
 class Object:
-    def __init__(self, type_object) -> None:
-        self.type_object = type_object
-    
+    def __init__(self, _objects) -> None:
+        self.objects = _objects
     def intersect(self):
         '''This funtion will created'''
         pass
 
-
 class Sphere(Object):
     
-    def __init__(self, type_object, center, radius, tl = 0, tr = 0) -> None:
-        super().__init__(type_object)
+    def __init__(self, objects, center, radius, tl = 0, tr = 0) -> None:
+        super().__init__(objects)
         self.center = np.array(center)
         self.radius = radius
         self.tl = tl # first parameter
@@ -41,8 +39,8 @@ class Sphere(Object):
 
 class Plane(Object):
 
-    def __init__(self, type_object: Object, point: list, v_normal: list) -> None:
-        super().__init__(type_object)
+    def __init__(self, objects: Object, point: list, v_normal: list) -> None:
+        super().__init__(objects)
         self.point = np.array(point)
         self.v_normal = np.array(v_normal)
 
@@ -61,8 +59,8 @@ class Plane(Object):
 
 class Triangle(Object):
 
-    def __init__(self, type_object, coords: list[list], _h_b = 0, _h_c = 0) -> None:
-        super().__init__(type_object)
+    def __init__(self, objects, coords: list[list], _h_b = 0, _h_c = 0) -> None:
+        super().__init__(objects)
         self.point_A, self.point_B, self.point_C = coords
         self.h_b = _h_b
         self.h_c = _h_c

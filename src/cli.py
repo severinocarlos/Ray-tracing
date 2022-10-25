@@ -2,6 +2,8 @@ import argparse
 import json
 import os
 from build import Build
+from modules.objects import Object
+from modules.identify import identify
 
 def cli() -> str:
     parser = argparse.ArgumentParser()
@@ -22,9 +24,15 @@ def readinfo(_file: str) -> dict():
     
     return info
 
+
+        # self.objects = [identify_object(object_opt) for object_opt in self.objects["objects"]]
 if __name__ == "__main__":
     file: str = cli()
     scene_info: dict = readinfo(file)
-    print(scene_info)   
-    pixel_screen = Build(scene_info)
-    pixel_screen.buildRays()
+
+    objects = identify(scene_info['objects'])
+    scene_info['object_list'] = objects
+    scene = Build(scene_info)
+    object = Object(scene_info['objects'])
+    
+    scene.buildRays()
