@@ -1,5 +1,6 @@
 import numpy as np
 from math import hypot
+from ray import Ray
 
 class Build:
     def __init__(self, scene_dict: dict) -> None:
@@ -42,6 +43,11 @@ class Build:
                 current_position = pixel_center_00 + self.PIXEL_SIZE * (j * u - i * v)
                 ray_direction = cam_eye - current_position
                 ray_direction = normalize(ray_direction, norm(*ray_direction))
-                
+                ray = Ray(ray_direction, cam_eye)
+
     def ray_tracing(self):
+        ...
+
+
+    def intersect(self):
         ...

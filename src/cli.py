@@ -24,6 +24,7 @@ def readinfo(_file: str) -> dict():
 
 if __name__ == "__main__":
     file: str = cli()
-    scene_info: dict = readinfo(file)   
+    scene_info: dict = readinfo(file)
+    print(scene_info)   
     pixel_screen = Build(scene_info)
     pixel_screen.buildRays()
