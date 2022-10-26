@@ -2,7 +2,6 @@ import argparse
 import json
 import os
 from build import Build
-from modules.objects import Object
 from modules.elements import set_elements
 from modules.image import Image
 
@@ -30,14 +29,15 @@ def readinfo(_file: str) -> dict():
 if __name__ == "__main__":
     file: str = cli()
     scene_info: dict = readinfo(file)
+    # setting object and info in the scene
     objects = set_elements(scene_info['objects'])
     scene_info['object_list'] = objects
-    print(scene_info)
-    scene = Build(scene_info)
-    object = Object(scene_info['objects'])
 
-    # building the image
+    
+    scene = Build(scene_info)
+    # building scene elements
     image: Image = scene.buildRays()
+    
     # draw the image
     image.draw_image()
     
