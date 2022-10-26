@@ -3,7 +3,8 @@ import json
 import os
 from build import Build
 from modules.objects import Object
-from modules.identify import identify
+from modules.elements import set_elements
+from modules.image import Image
 
 def cli() -> str:
     parser = argparse.ArgumentParser()
@@ -29,10 +30,14 @@ def readinfo(_file: str) -> dict():
 if __name__ == "__main__":
     file: str = cli()
     scene_info: dict = readinfo(file)
-
-    objects = identify(scene_info['objects'])
+    objects = set_elements(scene_info['objects'])
     scene_info['object_list'] = objects
+
     scene = Build(scene_info)
     object = Object(scene_info['objects'])
+
+    # building the image
+    image: Image = scene.buildRays()
+    # draw the image
+    image.draw_image()
     
-    scene.buildRays()

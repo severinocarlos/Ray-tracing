@@ -42,12 +42,14 @@ from math import hypot, sqrt
 # print(v,u)
 # print(np.cross(v,u))
 
-def projection(_a, _b) -> tuple:
-            a =  np.array(_a)
-            b =  np.array(_b)
+# def projection(_a, _b) -> tuple:
+#             a =  np.array(_a)
+#             b =  np.array(_b)
 
-            return (a * b / b * b) * b
-a = np.array([1,2, 3])
-b = np.array([2,4, 5])
+#             return (a * b / b * b) * b
+# a = np.array([1,2, 3])
+# b = np.array([2,4, 5])
 
-print(a*b)
+# print(a*b)
+
+

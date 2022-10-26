@@ -1,6 +1,7 @@
 import numpy as np
-from math import hypot
+from math import hypot, inf
 from modules.ray import Ray
+from modules.image import Image
 
 class Build:
     def __init__(self, scene_dict: dict) -> None:
@@ -16,6 +17,8 @@ class Build:
         self.objs: list = scene_dict['object_list']
         
     def buildRays(self):
+        screen = Image(self.HEIGHT, self.WIDTH, self.BACKGROUND_COLOR) # creating a screen
+
         cam_eye = np.array(self.CAM_EYE)
         cam_look_at = np.array(self.CAM_LOOK_AT)
         up_vector = np.array(self.UP_VECTOR)
@@ -46,14 +49,26 @@ class Build:
                 ray_direction = cam_eye - current_position
                 ray_direction = normalize(ray_direction, norm(*ray_direction))
                 ray = Ray(ray_direction, cam_eye)
-                self.intersection(ray)
-    def ray_tracing(self):
-        ...
-
-
-    def intersection(self, ray: Ray):
+                
+                # setting the pixel color in the screen
+                screen.set_pixel_color(i, j, self.rayTracer(ray))
+                
         
-        for objects in self.objs:
-            print(objects)
-            distance = objects.intersection(ray)
-            return distance
+        return screen
+
+    def rayTracer(self, ray: Ray):
+        
+        _, intersection, object = self.find_intersection(ray)
+        if not intersection:
+            return self.BACKGROUND_COLOR
+        else:
+            return object.color
+    
+    def find_intersection(self, ray: Ray, isIntersection = False, distance = inf) -> float | int:
+        
+        # checking the intersections for each object
+        for object in self.objs:
+            distance = min(object.intersect(ray), distance) # select the min intersection
+            isIntersection = True if distance != inf else False
+
+        return (distance, isIntersection, object)

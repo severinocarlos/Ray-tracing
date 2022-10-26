@@ -6,21 +6,22 @@ class Object:
     def __init__(self, _objects) -> None:
         self.objects = _objects
     def intersect(self):
-        '''This funtion will created'''
+        '''This funtion will be recreated for other class'''
         pass
 
 class Sphere(Object):
     
-    def __init__(self, objects, center, radius, tl = 0, tr = 0) -> None:
+    def __init__(self, objects, center, radius, color, tl = 0, tr = 0) -> None:
         super().__init__(objects)
         self.center = np.array(center)
         self.radius = radius
+        self.color = color
         self.tl = tl # first parameter
         self.tr = tr # second parameter
 
     def intersect(self, ray: Ray):
  
-        ray_to_sphere = self.center - ray.center # ray origin to sphere origin
+        ray_to_sphere = self.center - ray.origin # ray origin to sphere origin
         
         escalar_prod = lambda _a, _b :  np.sum(_a * _b)
         t_min = escalar_prod(ray_to_sphere, ray.direction) # parameter
@@ -39,10 +40,11 @@ class Sphere(Object):
 
 class Plane(Object):
 
-    def __init__(self, objects: Object, point: list, v_normal: list) -> None:
+    def __init__(self, objects: Object, point: list, v_normal: list, color) -> None:
         super().__init__(objects)
         self.point = np.array(point)
         self.v_normal = np.array(v_normal)
+        self.color = color
 
     def intersect(self, ray: Ray):
         escalar_prod = lambda _a, _b :  np.sum(_a * _b)
@@ -59,9 +61,10 @@ class Plane(Object):
 
 class Triangle(Object):
 
-    def __init__(self, objects, coords: list[list], _h_b = 0, _h_c = 0) -> None:
+    def __init__(self, objects, coords: list[list], color, _h_b = 0, _h_c = 0) -> None:
         super().__init__(objects)
         self.point_A, self.point_B, self.point_C = coords
+        self.color = color
         self.h_b = _h_b
         self.h_c = _h_c
 
@@ -72,13 +75,13 @@ class Triangle(Object):
         normal = np.cross(u,v)
 
         # pre processing
-        projection = lambda a, b : (a * b / b * b) * b
+        projection = lambda a, b : (np.dot(a, b) / np.dot(b, b)) * b
         escalar_prod = lambda _a, _b :  np.sum(_a * _b)
         self.h_b = u - projection(u,v)
         self.h_c = v - projection(v,u)
 
-        self.h_b = escalar_prod(self.h_b, self.h_b) ** -1 * self.h_b
-        self.h_c = escalar_prod(self.h_c, self.h_c) ** -1 * self.h_c
+        self.h_b = (escalar_prod(self.h_b, self.h_b) ** -1) * self.h_b
+        self.h_c = (escalar_prod(self.h_c, self.h_c) ** -1) * self.h_c
         
         # plane intersection function
         k = escalar_prod(ray.direction, normal)
