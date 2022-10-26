@@ -32,7 +32,7 @@ if __name__ == "__main__":
     scene_info: dict = readinfo(file)
     objects = set_elements(scene_info['objects'])
     scene_info['object_list'] = objects
-
+    print(scene_info)
     scene = Build(scene_info)
     object = Object(scene_info['objects'])
 

@@ -16,7 +16,7 @@ class Build:
         self.OBJECTS: list = scene_dict['objects']
         self.objs: list = scene_dict['object_list']
         
-    def buildRays(self):
+    def buildRays(self) -> Image:
         screen = Image(self.HEIGHT, self.WIDTH, self.BACKGROUND_COLOR) # creating a screen
 
         cam_eye = np.array(self.CAM_EYE)
@@ -56,7 +56,7 @@ class Build:
         
         return screen
 
-    def rayTracer(self, ray: Ray):
+    def rayTracer(self, ray: Ray) -> list:
         
         _, intersection, object = self.find_intersection(ray)
         if not intersection:
@@ -69,6 +69,7 @@ class Build:
         # checking the intersections for each object
         for object in self.objs:
             distance = min(object.intersect(ray), distance) # select the min intersection
+            # print(distance)
             isIntersection = True if distance != inf else False
 
         return (distance, isIntersection, object)

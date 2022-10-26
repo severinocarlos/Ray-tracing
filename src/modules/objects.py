@@ -23,9 +23,8 @@ class Sphere(Object):
  
         ray_to_sphere = self.center - ray.origin # ray origin to sphere origin
         
-        escalar_prod = lambda _a, _b :  np.sum(_a * _b)
-        t_min = escalar_prod(ray_to_sphere, ray.direction) # parameter
-        distance = sqrt(escalar_prod(ray_to_sphere, ray_to_sphere) -  t_min**2)
+        t_min = np.dot(ray_to_sphere, ray.direction) # parameter
+        distance = sqrt(np.dot(ray_to_sphere, ray_to_sphere) -  t_min**2)
 
         if distance ** 2 <= self.radius ** 2: # d**2 <= radius**2?
             h = sqrt(distance ** 2 + self.radius ** 2) # pitagoras
@@ -47,16 +46,15 @@ class Plane(Object):
         self.color = color
 
     def intersect(self, ray: Ray):
-        escalar_prod = lambda _a, _b :  np.sum(_a * _b)
-        v = escalar_prod(ray.direction, self.v_normal)
-        
-        epslon = 1e-6
+        v = np.dot(ray.direction, self.v_normal) 
+        epslon = 0.0000001
+
         if abs(v) < epslon:
             return inf
         else:
-            h = escalar_prod(self.point - ray.origin, self.v_normal)
+            h = np.dot(self.point - ray.origin, self.v_normal)
             t_parameter = h / v
-            return t_parameter if t_parameter > 0 else inf
+            return inf if t_parameter < 0 else t_parameter
 
 
 class Triangle(Object):
@@ -76,21 +74,20 @@ class Triangle(Object):
 
         # pre processing
         projection = lambda a, b : (np.dot(a, b) / np.dot(b, b)) * b
-        escalar_prod = lambda _a, _b :  np.sum(_a * _b)
         self.h_b = u - projection(u,v)
         self.h_c = v - projection(v,u)
 
-        self.h_b = (escalar_prod(self.h_b, self.h_b) ** -1) * self.h_b
-        self.h_c = (escalar_prod(self.h_c, self.h_c) ** -1) * self.h_c
+        self.h_b = (np.dot(self.h_b, self.h_b) ** -1) * self.h_b
+        self.h_c = (np.dot(self.h_c, self.h_c) ** -1) * self.h_c
         
         # plane intersection function
-        k = escalar_prod(ray.direction, normal)
+        k = np.dot(ray.direction, normal)
         
         epslon = 1e-6
         if abs(k) < epslon:
             t =  inf
         else:
-            h = escalar_prod(self.point_A - ray.origin, self.normal) # é com o point A?
+            h = np.dot(self.point_A - ray.origin, self.normal) # é com o point A?
             t_parameter = h / k
             t = t_parameter if t_parameter > 0 else inf
         

@@ -14,7 +14,5 @@ class Image:
 
     def draw_image(self):
         pixel_grid = np.array(self.pixel_grid)
-        print(pixel_grid[self.height//2-1])
-        print(pixel_grid[self.height//2+1])
         my_image = ImagePil.fromarray(pixel_grid, mode="RGB")
         my_image.save('2.jpg')

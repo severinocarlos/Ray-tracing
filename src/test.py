@@ -53,3 +53,4 @@ from math import hypot, sqrt
 # print(a*b)
 
 
+# print(np.dot([1,2,4], [1,2,3])) # 1+4+12
