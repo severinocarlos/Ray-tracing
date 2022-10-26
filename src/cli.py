@@ -26,7 +26,7 @@ def readinfo(_file: str) -> dict():
     return info
 
 
-        # self.objects = [identify_object(object_opt) for object_opt in self.objects["objects"]]
+
 if __name__ == "__main__":
     file: str = cli()
     scene_info: dict = readinfo(file)
