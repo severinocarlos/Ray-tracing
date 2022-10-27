@@ -66,10 +66,13 @@ class Build:
     
     def find_intersection(self, ray: Ray, isIntersection = False, distance = inf) -> float | int:
         
+
         # checking the intersections for each object
         for object in self.objs:
-            distance = min(object.intersect(ray), distance) # select the min intersection
-            # print(distance)
+            inter = object.intersect(ray)
+            if inter <= distance:
+                distance = inter
+                current_object = object
             isIntersection = True if distance != inf else False
 
-        return (distance, isIntersection, object)
+        return (distance, isIntersection, current_object)

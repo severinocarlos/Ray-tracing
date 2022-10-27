@@ -16,7 +16,7 @@ def cli() -> str:
 
     return _file
 
-def readinfo(_file: str) -> dict():
+def readinfo(_file: str) -> dict:
     directory = os.getcwd()
     path = f'{directory}\\images-info\\{_file}'
     with open(path, 'r') as json_file:
@@ -24,11 +24,11 @@ def readinfo(_file: str) -> dict():
     
     return info
 
-
-
 if __name__ == "__main__":
     file: str = cli()
     scene_info: dict = readinfo(file)
+    print(scene_info)
+    
     # setting object and info in the scene
     objects = set_elements(scene_info['objects'])
     scene_info['object_list'] = objects
