@@ -62,6 +62,9 @@ class Triangle(Object):
     def __init__(self, objects, coords: list[list], color, _h_b = 0, _h_c = 0) -> None:
         super().__init__(objects)
         self.point_A, self.point_B, self.point_C = coords
+        self.point_A = np.array(self.point_A)
+        self.point_B = np.array(self.point_B)
+        self.point_C = np.array(self.point_C)
         self.color = color
         self.h_b = _h_b
         self.h_c = _h_c
@@ -69,7 +72,7 @@ class Triangle(Object):
     def intersect(self, ray: Ray):
         # calculating normal vector to the plane
         v = np.subtract(self.point_B, self.point_A)
-        u = np.subtract(self.point_C - self.point_A)
+        u = np.subtract(self.point_C, self.point_A)
         normal = np.cross(u,v)
 
         # pre processing
@@ -87,11 +90,12 @@ class Triangle(Object):
         if abs(k) < epslon:
             t =  inf
         else:
-            h = np.dot(self.point_A - ray.origin, self.normal) # é com o point A?
+            h = np.dot(self.point_A - ray.origin, normal) # é com o point A?
             t_parameter = h / k
             t = t_parameter if t_parameter > 0 else inf
-        
-        return inf if t == inf else ...
+
+        if t == inf:
+            return inf
 
         # calculation intersection
         P = ray.origin + t * ray.direction
@@ -100,7 +104,7 @@ class Triangle(Object):
         gama =  vector_v * self.h_c
         alpha = 1 - (beta + gama)
 
-        if 0 <= alpha + beta + gama <= 1:
+        if 0 <= sum(alpha + beta + gama) <= 1:
             return t # return escalar
         else:
             return inf

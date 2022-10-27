@@ -53,7 +53,9 @@ from math import hypot, sqrt
 # print(a*b)
 
 
-# print(np.dot([1,2,4], [1,2,3])) # 1+4+12
+# # print(np.dot([1,2,4], [1,2,3])) # 1+4+12
 
-a = np.array([[1],[2]])
-print(a)
+# a = np.array([[1],[2]])
+# print(a)
+a = 'ucranio.json'
+print(a[:-5])

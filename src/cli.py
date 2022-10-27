@@ -39,5 +39,5 @@ if __name__ == "__main__":
     image: Image = scene.buildRays()
     
     # draw the image
-    image.draw_image()
+    image.draw_image(file)
     
