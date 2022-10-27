@@ -19,3 +19,10 @@ class Sphere(Object):
         super().__init__(r_intensity, g_intensity, b_intensity, k_a, k_d, k_s, exp)
         self.radius = r
         self.center = np.array([o_x, o_y, o_z])
+
+class Triangle(Object):
+    def __init__(self, r_intensity, g_intensity, b_intensity, k_a, k_d, k_s, exp, a_x, a_y, a_z, b_x, b_y, b_z, c_x, c_y, c_z):
+        super().__init__(r_intensity, g_intensity, b_intensity, k_a, k_d, k_s, exp)
+        self.a = np.array([a_x, a_y, a_z])
+        self.b = np.array([b_x, b_y, b_z])
+        self.c = np.array([c_x, c_y, c_z])
