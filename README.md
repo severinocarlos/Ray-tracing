@@ -1,2 +1,2 @@
 # Ray-tracing
-The project was made for course Graphic Processing
+This project was made in the discipline of Graphic Processing
