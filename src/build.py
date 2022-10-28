@@ -41,6 +41,12 @@ class Build:
         pixel_center_00 = screen_center + (1/2 * self.PIXEL_SIZE * (self.HEIGHT-1) * v) \
                                         - (1/2 * self.PIXEL_SIZE * (self.WIDTH-1) * u)
 
+        # Analisar essa forma
+        
+        # y_vector = (self.HEIGHT / 2) * v
+        # x_vector = (self.WIDTH / 2 ) * u
+
+        # pixel_center_00 = screen_center + self.PIXEL_SIZE * (y_vector - x_vector)
         
         # computing the rays direction
         for i in range(self.HEIGHT):

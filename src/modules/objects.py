@@ -6,7 +6,7 @@ class Object:
     def __init__(self, _objects) -> None:
         self.objects = _objects
     def intersect(self):
-        '''This funtion will be recreated for other class'''
+        '''This function will be recreated for other class'''
         pass
 
 class Sphere(Object):
