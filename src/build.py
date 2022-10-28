@@ -42,7 +42,7 @@ class Build:
                                         - (1/2 * self.PIXEL_SIZE * (self.WIDTH-1) * u)
 
         # Analisar essa forma
-        
+        pixel_center_00 = screen_center + self.PIXEL_SIZE * (((self.HEIGHT - 1)/2) * v - ((self.WIDTH - 1)/2) * u)
         # y_vector = (self.HEIGHT / 2) * v
         # x_vector = (self.WIDTH / 2 ) * u
 
@@ -52,17 +52,17 @@ class Build:
         for i in range(self.HEIGHT):
             for j in range(self.WIDTH):
                 current_position = pixel_center_00 + self.PIXEL_SIZE * (j * u - i * v)
-                ray_direction = cam_eye - current_position
+                ray_direction = current_position - cam_eye  # alter
                 ray_direction = normalize(ray_direction, norm(*ray_direction))
                 ray = Ray(ray_direction, cam_eye)
                 
                 # setting the pixel color in the screen
-                screen.set_pixel_color(i, j, self.rayTracer(ray))
+                screen.set_pixel_color(i, j, self.rayCasting()(ray))
                 
         
         return screen
 
-    def rayTracer(self, ray: Ray) -> list:
+    def rayCasting(self, ray: Ray) -> list:
         
         _, intersection, object = self.find_intersection(ray)
         if not intersection:
