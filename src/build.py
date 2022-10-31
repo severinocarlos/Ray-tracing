@@ -57,7 +57,7 @@ class Build:
                 ray = Ray(ray_direction, cam_eye)
                 
                 # setting the pixel color in the screen
-                screen.set_pixel_color(i, j, self.rayCasting()(ray))
+                screen.set_pixel_color(i, j, self.rayCasting(ray))
                 
         
         return screen

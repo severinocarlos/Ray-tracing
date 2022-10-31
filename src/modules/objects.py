@@ -24,13 +24,14 @@ class Sphere(Object):
         ray_to_sphere = self.center - ray.origin # ray origin to sphere origin
         
         t_min = np.dot(ray_to_sphere, ray.direction) # parameter
-        distance = sqrt(np.dot(ray_to_sphere, ray_to_sphere) -  t_min**2)
+        
+        distance = sqrt(np.dot(ray_to_sphere, ray_to_sphere) -  t_min ** 2)
 
         if distance ** 2 <= self.radius ** 2: # d**2 <= radius**2?
-            h = sqrt(distance ** 2 + self.radius ** 2) # pitagoras
+            h = sqrt(self.radius ** 2 - distance ** 2) # pitagoras
             tl, tr = t_min - h, t_min + h
             if tl < 0:
-                return tr if tr > 0 else inf
+                return inf if tr < 0 else tr
             else:
                 return tl
         else: # not intersection
@@ -47,9 +48,9 @@ class Plane(Object):
 
     def intersect(self, ray: Ray):
         v = np.dot(ray.direction, self.v_normal) 
-        epslon = 0.0000001
+        EPSLON = 0.0000001
 
-        if abs(v) < epslon:
+        if abs(v) < EPSLON:
             return inf
         else:
             h = np.dot(self.point - ray.origin, self.v_normal)
@@ -59,52 +60,53 @@ class Plane(Object):
 
 class Triangle(Object):
 
-    def __init__(self, objects, coords: list[list], color, _h_b = 0, _h_c = 0) -> None:
+    def __init__(self, objects, coords: list[list], color) -> None:
         super().__init__(objects)
         self.point_A, self.point_B, self.point_C = coords
         self.point_A = np.array(self.point_A)
         self.point_B = np.array(self.point_B)
         self.point_C = np.array(self.point_C)
         self.color = color
-        self.h_b = _h_b
-        self.h_c = _h_c
-
-    def intersect(self, ray: Ray):
+        
         # calculating normal vector to the plane
-        v = np.subtract(self.point_B, self.point_A)
-        u = np.subtract(self.point_C, self.point_A)
-        normal = np.cross(u,v)
-
+        self.v = np.subtract(self.point_B, self.point_A)
+        self.u = np.subtract(self.point_C, self.point_A)
+        self.normal = np.cross(self.u, self.v)
+        
         # pre processing
         projection = lambda a, b : (np.dot(a, b) / np.dot(b, b)) * b
-        self.h_b = u - projection(u,v)
-        self.h_c = v - projection(v,u)
+        self.h_b = self.u - projection(self.u, self.v)
+        self.h_c = self.v - projection(self.v, self.u)
 
         self.h_b = (np.dot(self.h_b, self.h_b) ** -1) * self.h_b
         self.h_c = (np.dot(self.h_c, self.h_c) ** -1) * self.h_c
         
+    def intersect(self, ray: Ray):
         # plane intersection function
-        k = np.dot(ray.direction, normal)
-        
-        epslon = 1e-6
-        if abs(k) < epslon:
+        v = np.dot(ray.direction, self.normal)
+        # print(v)
+        EPSLON = 0.0000001
+    
+        if abs(v) < EPSLON: # parallel to the plane
             t =  inf
         else:
-            h = np.dot(self.point_A - ray.origin, normal) # é com o point A?
-            t_parameter = h / k
-            t = t_parameter if t_parameter > 0 else inf
-
-        if t == inf:
+            h = np.dot(self.point_A - ray.origin, self.normal) # é com o point A?
+            t_parameter = h / v
+            print(t_parameter)
+            t = inf if t_parameter < 0 else t_parameter
+        
+        
+        if t == inf: # not intersection
             return inf
 
         # calculation intersection
-        P = ray.origin + t * ray.direction
+        P = ray.origin + (t * ray.direction)
         vector_v = P - self.point_A
-        beta = vector_v * self.h_b
-        gama =  vector_v * self.h_c
+        beta = np.dot(vector_v, self.h_b)
+        gama =  np.dot(vector_v, self.h_c)
         alpha = 1 - (beta + gama)
 
-        if 0 <= sum(alpha + beta + gama) <= 1:
+        if 0 <= alpha + beta + gama <= 1:            
             return t # return escalar
         else:
             return inf

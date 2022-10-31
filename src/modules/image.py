@@ -15,8 +15,7 @@ class Image():
     def draw_image(self, file):
         pixel_grid = np.array(self.pixel_grid).astype(np.uint8)
 
-        # print(np.shape(pixel_grid))
-        # print(pixel_grid)
+        print(f'Resolution: {np.shape(pixel_grid)}')
         
         my_image = ImagePil.fromarray(pixel_grid)
         
