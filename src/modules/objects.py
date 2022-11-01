@@ -1,6 +1,7 @@
-from math import sqrt, inf
+from math import sqrt, inf, hypot
 from modules.ray import Ray
 import numpy as np
+from time import sleep
 
 class Object:
     def __init__(self, _objects) -> None:
@@ -65,48 +66,53 @@ class Triangle(Object):
         self.point_A, self.point_B, self.point_C = coords
         self.point_A = np.array(self.point_A)
         self.point_B = np.array(self.point_B)
-        self.point_C = np.array(self.point_C)
+        self.point_C = np.array(self.point_C)       
         self.color = color
         
         # calculating normal vector to the plane
-        self.v = np.subtract(self.point_B, self.point_A)
-        self.u = np.subtract(self.point_C, self.point_A)
-        self.normal = np.cross(self.u, self.v)
+        u = self.point_B - self.point_A
+        v = self.point_C - self.point_A
         
+        self.normal = np.cross(u, v)
+
         # pre processing
         projection = lambda a, b : (np.dot(a, b) / np.dot(b, b)) * b
-        self.h_b = self.u - projection(self.u, self.v)
-        self.h_c = self.v - projection(self.v, self.u)
-
-        self.h_b = (np.dot(self.h_b, self.h_b) ** -1) * self.h_b
-        self.h_c = (np.dot(self.h_c, self.h_c) ** -1) * self.h_c
         
+        h_b = u - projection(u, v)
+        h_c = v - projection(v, u)
+
+        self.h_b =  h_b / (np.dot(h_b, h_b))
+        self.h_c =  h_c / (np.dot(h_c, h_c))
+        print(self.h_b, self.h_c)
+        
+
+
     def intersect(self, ray: Ray):
         # plane intersection function
+        print(ray.direction, self.normal)
         v = np.dot(ray.direction, self.normal)
-        # print(v)
+        print(v)
         EPSLON = 0.0000001
     
         if abs(v) < EPSLON: # parallel to the plane
             t =  inf
         else:
-            h = np.dot(self.point_A - ray.origin, self.normal) # é com o point A?
+            h = np.dot(self.point_A - ray.origin, self.normal) 
             t_parameter = h / v
-            print(t_parameter)
             t = inf if t_parameter < 0 else t_parameter
         
         
         if t == inf: # not intersection
             return inf
 
-        # calculation intersection
+        # calculation intersection point
         P = ray.origin + (t * ray.direction)
         vector_v = P - self.point_A
         beta = np.dot(vector_v, self.h_b)
         gama =  np.dot(vector_v, self.h_c)
         alpha = 1 - (beta + gama)
 
-        if 0 <= alpha + beta + gama <= 1:            
+        if 0 <= alpha + beta + gama <= 1:           
             return t # return escalar
         else:
             return inf
