@@ -18,7 +18,16 @@ def cli() -> str:
 
 def readinfo(_file: str) -> dict:
     directory = os.getcwd()
-    path = f'{directory}\\images-info\\{_file}'
+    versions = [ ['baloes.json', 'canto.json', 'cilindro.json', 'cone.json', 'cubo.json', 'icosaedro.json',
+                'ilhas.json', 'japao.json', 'olho.json', 'suzanne.json', 'ucrania.json'],
+                ['chiclete.json', 'diamante.json', 'eclipse.json', 'piramide.json', 'queijo.json', 'sinuca.json',
+                'sinuca.json', 'sorvete.json', 'terra.json', 'venn.json']]
+    for i, files in enumerate(versions):
+        if _file in files:
+            version = f'version-{i+1}'
+            break
+    
+    path = f'{directory}\\images-info\\{version}\\{_file}'
     with open(path, 'r') as json_file:
         info = json.load(json_file)
     
