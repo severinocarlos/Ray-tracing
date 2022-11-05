@@ -104,7 +104,7 @@ class Triangle(Object):
         gama =  np.dot(vector_v, self.h_c)
         alpha = 1 - (beta + gama)
 
-        if 0 <= alpha + beta + gama <= 1:           
-            return t # return escalar
+        if alpha < 0 or beta < 0 or gama < 0:           
+            return inf 
         else:
-            return inf
+            return t # return escalar
