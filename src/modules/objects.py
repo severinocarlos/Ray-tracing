@@ -63,35 +63,27 @@ class Triangle(Object):
 
     def __init__(self, objects, coords: list[list], color) -> None:
         super().__init__(objects)
-        self.point_A, self.point_B, self.point_C = coords
-        self.point_A = np.array(self.point_A)
-        self.point_B = np.array(self.point_B)
-        self.point_C = np.array(self.point_C)       
+        self.point_A, self.point_B, self.point_C = np.array(coords[0]), \
+                                                   np.array(coords[1]), \
+                                                   np.array(coords[2])
         self.color = color
         
         # calculating normal vector to the plane
         u = self.point_B - self.point_A
         v = self.point_C - self.point_A
-        
         self.normal = np.cross(u, v)
-
+      
         # pre processing
-        projection = lambda a, b : (np.dot(a, b) / np.dot(b, b)) * b
-        
-        h_b = u - projection(u, v)
+        projection = lambda a, b : (((np.dot(a, b)) / (np.dot(b, b))) * b)
+        h_b = u - projection(u, v)       
         h_c = v - projection(v, u)
 
         self.h_b =  h_b / (np.dot(h_b, h_b))
         self.h_c =  h_c / (np.dot(h_c, h_c))
-        print(self.h_b, self.h_c)
-        
-
 
     def intersect(self, ray: Ray):
         # plane intersection function
-        print(ray.direction, self.normal)
         v = np.dot(ray.direction, self.normal)
-        print(v)
         EPSLON = 0.0000001
     
         if abs(v) < EPSLON: # parallel to the plane
