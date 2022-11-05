@@ -55,15 +55,18 @@ class Build:
         return screen
 
     def cast(self, ray: Ray) -> list:
-        
+        cp = self.BACKGROUND_COLOR
+
         t, intersection, object = self.find_intersection(ray)
         # if not intersection:
         #     return self.BACKGROUND_COLOR
         # else:
         #     return object.color
         if not intersection:
-            P = ray.origin + (t * ray.direction)
-            v = -ray.direction
+            P = np.array(ray.origin + (t * ray.direction)) # intersection point
+            v = -ray.direction # olhando para o observador
+            n = object.normal(P)
+            cp = self.shade(object, P, v, n)
     
     def find_intersection(self, ray: Ray, isIntersection = False, distance = inf) -> float | int:
         
@@ -76,3 +79,33 @@ class Build:
             isIntersection = True if distance != inf else False
 
         return (distance, isIntersection, current_object)
+    
+    def shade(self, _object, _P, _v, _n):
+        cp = np.multiply(_object.ka * _object.color, self.ambient_light)
+
+
+        norm = lambda x, y, z : hypot(x,y,z)
+        normalize = lambda a, b: a / b
+
+        for C, L  in self.LIGHTS:
+            l = np.array(L - _P)
+            l = normalize(l, norm(*l))
+            r = self.reflect(l, _n)
+
+            light_point =  _P + 0.00001 * l
+            ray = Ray(light_point, l)
+
+            t, intersection, object = self.find_intersection(ray)
+
+            if not intersection or np.dot(l, L - light_point) < t:
+                if np.dot(_n, l) > 0:
+                    cp += np.multiply(_object.kd * object.color, C * np.dot(_n, l))
+                if np.dot(_v, r) > 0:
+                    cp += _object.ks * (np.dot(_v, r) ** _object.exp) * C
+        
+        return cp
+
+            
+    def reflect(self, _l, _n):
+        return 2((_n * _l) * (_n - _l))
+

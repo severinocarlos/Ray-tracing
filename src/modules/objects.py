@@ -12,11 +12,15 @@ class Object:
 
 class Sphere(Object):
     
-    def __init__(self, objects, center, radius, color, tl = 0, tr = 0) -> None:
+    def __init__(self, objects, center, radius, color, ka, kd, ks, exp, tl = 0, tr = 0) -> None:
         super().__init__(objects)
         self.center = np.array(center)
         self.radius = radius
         self.color = color
+        self.ka = ka
+        self.kd = kd
+        self.ks = ks
+        self.exp =  exp
         self.tl = tl # first parameter
         self.tr = tr # second parameter
 
@@ -38,14 +42,24 @@ class Sphere(Object):
         else: # not intersection
             return inf
 
+    def normal(self, P):
+        norm = lambda x, y, z : hypot(x,y,z)
+        normalize = lambda a, b: a / b
+        normal = P - self.center
+
+        return normalize(normal, norm(*normal))
 
 class Plane(Object):
 
-    def __init__(self, objects: Object, point: list, v_normal: list, color) -> None:
+    def __init__(self, objects: Object, point: list, v_normal: list, color, ka, kd, ks, exp) -> None:
         super().__init__(objects)
         self.point = np.array(point)
         self.v_normal = np.array(v_normal)
         self.color = color
+        self.ka = ka
+        self.kd = kd
+        self.ks = ks
+        self.exp =  exp
 
     def intersect(self, ray: Ray):
         v = np.dot(ray.direction, self.v_normal) 
@@ -57,16 +71,26 @@ class Plane(Object):
             h = np.dot(self.point - ray.origin, self.v_normal)
             t_parameter = h / v
             return inf if t_parameter < 0 else t_parameter
+    
+    def normal(self, _):
+        norm = lambda x, y, z : hypot(x,y,z)
+        normalize = lambda a, b: a / b
+
+        return normalize(self.v_normal / norm(*self.v_normal))
 
 
 class Triangle(Object):
 
-    def __init__(self, objects, coords: list[list], color) -> None:
+    def __init__(self, objects, coords: list[list], color, ka, kd, ks, exp) -> None:
         super().__init__(objects)
         self.point_A, self.point_B, self.point_C = np.array(coords[0]), \
                                                    np.array(coords[1]), \
                                                    np.array(coords[2])
         self.color = color
+        self.ka = ka
+        self.kd = kd
+        self.ks = ks
+        self.exp =  exp # phong exponent
         
         # calculating normal vector to the plane
         u = self.point_B - self.point_A
