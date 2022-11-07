@@ -1,21 +1,28 @@
 from .objects import Sphere, Plane, Triangle
-
+from .light import Light
+import numpy as np
 
 # identify objects and setting objects properties
-def set_elements(objects):
+def set_elements(objects, lights):
     object_list = []
+    light_list = []
 
     for object in objects:
         if 'sphere' in object:
-            new = Sphere(objects, object['sphere']['center'], object['sphere']['radius'], object['color'],
+            new = Sphere(objects, np.array(object['sphere']['center']), object['sphere']['radius'], np.array(object['color'])/255,
                          object['ka'], object['kd'], object['ks'], object['exp'])
         elif 'plane' in object:
-            new = Plane(objects, object['plane']['sample'], object['plane']['normal'], object['color'],
+            new = Plane(objects, np.array(object['plane']['sample']), np.array(object['plane']['normal']), np.array(object['color'])/255,
                         object['ka'], object['kd'], object['ks'], object['exp'])
         else:
-            new = Triangle(objects, object['triangle'], object['color'],
+            new = Triangle(objects, object['triangle'], np.array(object['color'])/255,
                            object['ka'], object['kd'], object['ks'], object['exp'])
         
         object_list.append(new)
     
-    return object_list
+    # setting lights
+    for values in lights:
+        new_light = Light(np.array(values['intensity'])/255, values['position'])
+        light_list.append(new_light)
+
+    return (object_list, light_list)

@@ -18,16 +18,8 @@ def cli() -> str:
 
 def readinfo(_file: str) -> dict:
     directory = os.getcwd()
-    versions = [ ['baloes.json', 'canto.json', 'cilindro.json', 'cone.json', 'cubo.json', 'icosaedro.json',
-                'ilhas.json', 'japao.json', 'olho.json', 'suzanne.json', 'ucrania.json'],
-                ['chiclete.json', 'diamante.json', 'eclipse.json', 'piramide.json', 'queijo.json', 'sinuca.json',
-                'sinuca.json', 'sorvete.json', 'terra.json', 'venn.json']]
-    for i, files in enumerate(versions):
-        if _file in files:
-            version = f'version-{i+1}'
-            break
     
-    path = f'{directory}\\images-info\\{version}\\{_file}'
+    path = f'{directory}\\images-info\\version-2\\{_file}'
     with open(path, 'r') as json_file:
         info = json.load(json_file)
     
@@ -39,8 +31,9 @@ if __name__ == "__main__":
     print(scene_info)
     
     # setting object and info in the scene
-    objects = set_elements(scene_info['objects'])
+    objects, lights = set_elements(scene_info['objects'], scene_info['lights'])
     scene_info['object_list'] = objects
+    scene_info['lights'] = lights
 
     
     scene = Build(scene_info)

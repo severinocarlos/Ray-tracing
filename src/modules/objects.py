@@ -1,13 +1,14 @@
 from math import sqrt, inf, hypot
 from modules.ray import Ray
 import numpy as np
-from time import sleep
 
 class Object:
     def __init__(self, _objects) -> None:
         self.objects = _objects
     def intersect(self):
         '''This function will be recreated for other class'''
+        pass
+    def normal(self):
         pass
 
 class Sphere(Object):
@@ -27,9 +28,7 @@ class Sphere(Object):
     def intersect(self, ray: Ray):
  
         ray_to_sphere = self.center - ray.origin # ray origin to sphere origin
-        
         t_min = np.dot(ray_to_sphere, ray.direction) # parameter
-        
         distance = sqrt(np.dot(ray_to_sphere, ray_to_sphere) -  t_min ** 2)
 
         if distance ** 2 <= self.radius ** 2: # d**2 <= radius**2?
@@ -76,7 +75,7 @@ class Plane(Object):
         norm = lambda x, y, z : hypot(x,y,z)
         normalize = lambda a, b: a / b
 
-        return normalize(self.v_normal / norm(*self.v_normal))
+        return normalize(self.v_normal, norm(*self.v_normal))
 
 
 class Triangle(Object):
@@ -95,7 +94,7 @@ class Triangle(Object):
         # calculating normal vector to the plane
         u = self.point_B - self.point_A
         v = self.point_C - self.point_A
-        self.normal = np.cross(u, v)
+        self.v_normal = np.cross(u, v)
       
         # pre processing
         projection = lambda a, b : (((np.dot(a, b)) / (np.dot(b, b))) * b)
@@ -107,13 +106,13 @@ class Triangle(Object):
 
     def intersect(self, ray: Ray):
         # plane intersection function
-        v = np.dot(ray.direction, self.normal)
+        v = np.dot(ray.direction, self.v_normal)
         EPSLON = 0.0000001
     
         if abs(v) < EPSLON: # parallel to the plane
             t =  inf
         else:
-            h = np.dot(self.point_A - ray.origin, self.normal) 
+            h = np.dot(self.point_A - ray.origin, self.v_normal) 
             t_parameter = h / v
             t = inf if t_parameter < 0 else t_parameter
         
@@ -132,3 +131,9 @@ class Triangle(Object):
             return inf 
         else:
             return t # return escalar
+    
+    def normal(self, _):
+        norm = lambda x, y, z : hypot(x,y,z)
+        normalize = lambda a, b: a / b
+        
+        return normalize(self.v_normal, norm(*self.v_normal))

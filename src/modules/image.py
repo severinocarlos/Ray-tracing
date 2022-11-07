@@ -16,7 +16,6 @@ class Image():
         pixel_grid = np.array(self.pixel_grid).astype(np.uint8)
 
         print(f'Resolution: {np.shape(pixel_grid)}')
-        
         my_image = ImagePil.fromarray(pixel_grid)
         
         directory = os.getcwd()
