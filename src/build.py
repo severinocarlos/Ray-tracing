@@ -1,9 +1,9 @@
 import numpy as np
-from math import hypot, inf
+from math import hypot, inf, sqrt
 from modules.ray import Ray
 from modules.image import Image
 from modules.light import Light
-
+from time import sleep
 class Build:
     def __init__(self, scene_dict: dict) -> None:
         self.HEIGHT: int = scene_dict['v_res']
@@ -17,8 +17,9 @@ class Build:
         self.OBJECTS: list = scene_dict['objects']
         self.objs: list = scene_dict['object_list']
         self.lights: list = scene_dict['lights']
-        self.ambient_light = np.array(scene_dict['ambient_light'])/255
-        
+        self.ambient_light: list = np.array(scene_dict['ambient_light'])/255
+        self.max_depth: int = scene_dict['max_depth']
+
     def buildRays(self) -> Image:
         screen = Image(self.HEIGHT, self.WIDTH, self.BACKGROUND_COLOR) # creating a screen
 
@@ -50,35 +51,64 @@ class Build:
                 ray_direction = current_position - cam_eye  # alter
                 ray_direction = normalize(ray_direction, norm(*ray_direction))
                 ray = Ray(origin=cam_eye, direction=ray_direction)
-                
+                print(f'ray build: {ray}')
                 # setting the pixel color in the screen
-                color = np.array(self.cast(ray))
+                color = np.array(self.cast(ray, self.max_depth))
                 color = color*255 / max(1, *color)
+                # print(color)
                 screen.set_pixel_color(i, j, color)        
         return screen
 
-    def cast(self, ray: Ray) -> list:
-        cp = self.BACKGROUND_COLOR
+    def cast(self, ray: Ray, max_depth: int) -> list:
+        cs = self.BACKGROUND_COLOR
+        print(ray)
         t, intersection, object = self.find_intersection(ray)
         
         if intersection:
             P = np.array(ray.origin + (t * ray.direction)) # intersection point
+            # view vector (observer)
             v = np.array([-i for i in ray.direction])
             normal_vector = object.normal(P)
-            cp = self.shade(object, P, v, normal_vector)
 
-        return cp
+            # phong shading (primary color)
+            # print('chamada do shade')
+            cs = self.shade(object, P, v, normal_vector)
+            # print(f'cast: {object}')
+
+            if self.max_depth > 0:
+                # direction reflected
+                reflected_vector = self.reflect(v, normal_vector)
+                reflected_point = P + (0.00001 * reflected_vector)
+                reflected_ray = Ray(origin=reflected_point, direction=reflected_vector)
+                try:
+                    # print(object.kt)
+                    if object.kt > 0:
+                        # print('entrei')
+                        refracted_vector = self.refract(object, v, normal_vector)
+                        # print(refracted_vector)
+                        refracted_point = P + (0.00001 * refracted_vector)
+                        refracted_ray = Ray(origin=refracted_point, direction=refracted_vector)
+                        cs += object.kt * self.cast(refracted_ray, max_depth-1)
+                    if object.kr > 0:
+                        # print('entrei')
+                        cs += object.kr * self.cast(reflected_ray, max_depth-1)
+                except:
+                    cs += self.cast(reflected_ray, max_depth-1)
+        # print('passei direto')
+        return cs
     
-    def find_intersection(self, ray: Ray, isIntersection = False, distance = inf) -> float | int:
+    def find_intersection(self, ray: Ray, isIntersection = False, distance = inf):
         
         # checking the intersections for each object
         for object in self.objs:
-            inter = object.intersect(ray)
-            if inter <= distance:
-                distance = inter
+            # print(object)
+            min_intersection = object.intersect(ray)
+            if min_intersection <= distance:
+                distance = min_intersection
                 current_object = object
             isIntersection = True if distance != inf else False
-
+        # print(f'current: {current_object}')
+        # print(f'find_intersection: {current_object}')
         return (distance, isIntersection, current_object)
     
     def shade(self, _object, _P, _v, _n):
@@ -109,5 +139,24 @@ class Build:
 
     def reflect(self, _l, _n):
         return 2 * np.dot(_n,_l) * _n - _l
-       
 
+    def refract(self,_object, _v, _n):
+        cos = np.dot(_n, _v)
+
+        # angle > 90
+        if cos < 0:
+            normal = np.array([-num for num in _n])
+            # intern to extern
+            idx_refraction = 1 / _object.index_of_refraction
+            cos = -cos
+        else:
+            normal = _n
+            idx_refraction = _object.index_of_refraction
+        delta = 1 - (1 / (idx_refraction ** 2) * (1 - (cos ** 2)))
+        if delta < 0:
+            raise TotalInternalReflectionException
+        else:
+            return  (-(1/idx_refraction) * _v) - normal * (sqrt(delta) - (1 / idx_refraction) * cos)
+
+class TotalInternalReflectionException:
+    pass

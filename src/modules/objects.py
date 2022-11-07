@@ -13,7 +13,8 @@ class Object:
 
 class Sphere(Object):
     
-    def __init__(self, objects, center, radius, color, ka, kd, ks, exp, tl = 0, tr = 0) -> None:
+    def __init__(self, objects, center, radius, color, ka, kd, ks, exp, 
+                 kr, kt, index_of_refraction, tl = 0, tr = 0) -> None:
         super().__init__(objects)
         self.center = np.array(center)
         self.radius = radius
@@ -22,6 +23,9 @@ class Sphere(Object):
         self.kd = kd
         self.ks = ks
         self.exp =  exp
+        self.kr = kr
+        self.kt = kt
+        self.index_of_refraction = index_of_refraction
         self.tl = tl # first parameter
         self.tr = tr # second parameter
 
@@ -50,7 +54,8 @@ class Sphere(Object):
 
 class Plane(Object):
 
-    def __init__(self, objects: Object, point: list, v_normal: list, color, ka, kd, ks, exp) -> None:
+    def __init__(self, objects: Object, point: list, v_normal: list, color, ka, kd, ks, exp,
+                 kr, kt, index_of_refraction) -> None:
         super().__init__(objects)
         self.point = np.array(point)
         self.v_normal = np.array(v_normal)
@@ -59,6 +64,9 @@ class Plane(Object):
         self.kd = kd
         self.ks = ks
         self.exp =  exp
+        self.kr = kr
+        self.kt = kt
+        self.index_of_refraction = index_of_refraction
 
     def intersect(self, ray: Ray):
         v = np.dot(ray.direction, self.v_normal) 
@@ -80,7 +88,8 @@ class Plane(Object):
 
 class Triangle(Object):
 
-    def __init__(self, objects, coords: list[list], color, ka, kd, ks, exp) -> None:
+    def __init__(self, objects, coords: list[list], color, ka, kd, ks, exp,
+                 kr, kt, index_of_refraction) -> None:
         super().__init__(objects)
         self.point_A, self.point_B, self.point_C = np.array(coords[0]), \
                                                    np.array(coords[1]), \
@@ -90,6 +99,9 @@ class Triangle(Object):
         self.kd = kd
         self.ks = ks
         self.exp =  exp # phong exponent
+        self.kr = kr
+        self.kt = kt
+        self.index_of_refraction = index_of_refraction
         
         # calculating normal vector to the plane
         u = self.point_B - self.point_A

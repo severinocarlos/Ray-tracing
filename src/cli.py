@@ -19,7 +19,7 @@ def cli() -> str:
 def readinfo(_file: str) -> dict:
     directory = os.getcwd()
     
-    path = f'{directory}\\images-info\\version-2\\{_file}'
+    path = f'{directory}\\images-info\\version-3\\{_file}'
     with open(path, 'r') as json_file:
         info = json.load(json_file)
     
@@ -28,18 +28,15 @@ def readinfo(_file: str) -> dict:
 if __name__ == "__main__":
     file: str = cli()
     scene_info: dict = readinfo(file)
-    print(scene_info)
     
     # setting object and info in the scene
     objects, lights = set_elements(scene_info['objects'], scene_info['lights'])
     scene_info['object_list'] = objects
     scene_info['lights'] = lights
-
-    
+    print(objects)
     scene = Build(scene_info)
     # building scene elements
     image: Image = scene.buildRays()
-    
     # draw the image
     image.draw_image(file)
     
