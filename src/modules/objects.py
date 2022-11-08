@@ -68,6 +68,7 @@ class Plane(Object):
         self.kt = kt
         self.index_of_refraction = index_of_refraction
 
+
     def intersect(self, ray: Ray):
         v = np.dot(ray.direction, self.v_normal) 
         EPSLON = 0.0000001

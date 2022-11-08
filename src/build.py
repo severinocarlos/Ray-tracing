@@ -61,7 +61,8 @@ class Build:
     def cast(self, ray: Ray, max_depth: int) -> list:
         cs = self.BACKGROUND_COLOR
         t, intersection, object = self.find_intersection(ray)
-
+        print(t)
+        sleep(1)
         if intersection:
             P = np.array(ray.origin + (t * ray.direction)) # intersection point
             # view vector (observer)
@@ -70,7 +71,7 @@ class Build:
             # phong shading (primary color)
             cs = self.shade(object, P, v, normal_vector)
 
-            if self.max_depth > 0:
+            if max_depth > 0:
                 # direction reflected
                 reflected_vector = self.reflect(v, normal_vector)
                 reflected_point = P + (0.00001 * reflected_vector)
@@ -97,8 +98,10 @@ class Build:
             if min_intersection <= distance:
                 distance = min_intersection
                 current_object = object
+                print(distance, current_object)
             isIntersection = True if distance != inf else False
-        
+        print('-'*40)
+        sleep(1)
         return (distance, isIntersection, current_object)
     
     def shade(self, _object, _P, _v, _n):
@@ -114,6 +117,7 @@ class Build:
 
             object_point =  _P + (0.00001 * to_light)
             shadow_ray = Ray(origin=object_point, direction=to_light)
+            print('chamei do cast')
             t, intersection, _ = self.find_intersection(shadow_ray) # testing for each object
 
             if not intersection or np.dot(to_light, light.position - object_point) < t:
@@ -146,7 +150,7 @@ class Build:
         if delta < 0:
             raise TotalInternalReflectionException
         else:
-            return  (-(1/idx_refraction) * _v) - normal * (sqrt(delta) - (1 / idx_refraction) * cos)
+            return  -1/idx_refraction * _v - normal * (sqrt(delta) - (1 / idx_refraction) * cos)
 
 class TotalInternalReflectionException:
     pass

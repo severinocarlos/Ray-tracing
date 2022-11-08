@@ -33,7 +33,7 @@ if __name__ == "__main__":
     objects, lights = set_elements(scene_info['objects'], scene_info['lights'])
     scene_info['object_list'] = objects
     scene_info['lights'] = lights
-    print(objects)
+    
     scene = Build(scene_info)
     # building scene elements
     image: Image = scene.buildRays()
