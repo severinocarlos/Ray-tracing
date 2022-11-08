@@ -62,7 +62,7 @@ class Build:
         else:
             return object.color
     
-    def find_intersection(self, ray: Ray, isIntersection = False, distance = inf) -> float | int:
+    def find_intersection(self, ray: Ray, isIntersection = False, distance = inf):
         
 
         # checking the intersections for each object
