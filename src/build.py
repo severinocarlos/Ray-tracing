@@ -61,8 +61,7 @@ class Build:
     def cast(self, ray: Ray, max_depth: int) -> list:
         cs = self.BACKGROUND_COLOR
         t, intersection, object = self.find_intersection(ray)
-        print(t)
-        sleep(1)
+        
         if intersection:
             P = np.array(ray.origin + (t * ray.direction)) # intersection point
             # view vector (observer)
