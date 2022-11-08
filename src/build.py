@@ -20,7 +20,7 @@ class Build:
         self.ambient_light: list = np.array(scene_dict['ambient_light'])/255
         self.max_depth: int = scene_dict['max_depth']
 
-    def buildRays(self) -> Image:
+    def render_scene(self) -> Image:
         screen = Image(self.HEIGHT, self.WIDTH, self.BACKGROUND_COLOR) # creating a screen
 
         cam_eye = np.array(self.CAM_EYE)
@@ -97,10 +97,10 @@ class Build:
             if min_intersection <= distance:
                 distance = min_intersection
                 current_object = object
-                print(distance, current_object)
+                # print(distance, current_object)
             isIntersection = True if distance != inf else False
-        print('-'*40)
-        sleep(1)
+        # print('-'*40)
+        # sleep(1)
         return (distance, isIntersection, current_object)
     
     def shade(self, _object, _P, _v, _n):
@@ -116,7 +116,7 @@ class Build:
 
             object_point =  _P + (0.00001 * to_light)
             shadow_ray = Ray(origin=object_point, direction=to_light)
-            print('chamei do cast')
+            # print('chamei do cast')
             t, intersection, _ = self.find_intersection(shadow_ray) # testing for each object
 
             if not intersection or np.dot(to_light, light.position - object_point) < t:
