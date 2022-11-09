@@ -20,6 +20,6 @@ class Image():
         my_image = ImagePil.fromarray(pixel_grid)
         
         directory = os.getcwd()
-        path = f'{directory}\\out\\{file[:-5]}_out.png'
+        path = f'{directory}\\outputs\\{file[:-5]}_out.png'
         my_image.save(path)
         

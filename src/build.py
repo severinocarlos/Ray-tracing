@@ -44,14 +44,13 @@ class Build:
         for i in range(self.HEIGHT):
             for j in range(self.WIDTH):
                 current_position = pixel_center_00 + self.PIXEL_SIZE * (j * u - i * v)
-                ray_direction = current_position - cam_eye  # alter
+                ray_direction = current_position - cam_eye
                 ray_direction = normalize(ray_direction, norm(*ray_direction))
-                ray = Ray(ray_direction, cam_eye)
+                ray = Ray(origin=cam_eye, direction=ray_direction)
                 
                 # setting the pixel color in the screen
                 screen.set_pixel_color(i, j, self.rayCasting(ray))
-                
-        
+
         return screen
 
     def rayCasting(self, ray: Ray) -> list:
@@ -63,8 +62,6 @@ class Build:
             return object.color
     
     def find_intersection(self, ray: Ray, isIntersection = False, distance = inf):
-        
-
         # checking the intersections for each object
         for object in self.objs:
             inter = object.intersect(ray)
