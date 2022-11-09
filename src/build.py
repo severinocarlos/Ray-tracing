@@ -40,23 +40,18 @@ class Build:
         screen_center = cam_eye - distance * w
         
         # calculating Q[0][0] = C + (1/2 * s(n-1) * v) - (1/2 * s(m-1) * u)
-        pixel_center_00 = screen_center + self.PIXEL_SIZE * (((self.HEIGHT - 1)/2) * v - ((self.WIDTH - 1)/2) * u)
+        pixel_center_00 = screen_center + self.PIXEL_SIZE * (((self.HEIGHT / 2) * v) - ((self.WIDTH / 2) * u))
         
-        num_samples = 25
-        
-        px_min = self.PIXEL_SIZE/ 50
-        
+        num_samples = 25    
         n = int(sqrt(num_samples))
-        
         # computing the rays direction
         for i in range(self.HEIGHT):
             for j in range(self.WIDTH):
                 sum_color = np.array([0.0,0.0,0.0])
-                current_position = pixel_center_00 + self.PIXEL_SIZE * (j * u - i * v)
                 
-                for c in range(n):
-                    current_position 
-                    for r in range(n):
+                for c in range(10):
+                    # for r in range(10):
+                        current_position = pixel_center_00 + self.PIXEL_SIZE * (((j + random.random()) * u) - ((i + random.random()) * v))
                         ray_direction = current_position - cam_eye  # alter
                         ray_direction = normalize(ray_direction, norm(*ray_direction))
                         
@@ -64,32 +59,14 @@ class Build:
                         
                         # setting the pixel color in the screen
                         sum_color += self.rayCasting(ray)
-                
-                
-                # current_position = pixel_center_00 + self.PIXEL_SIZE * (j * u - i * v)
-                # ray_direction = current_position - cam_eye  # alter
-                # ray_direction = normalize(ray_direction, norm(*ray_direction))
-                
-                # ray = Ray(ray_direction, cam_eye)
-                
-                # setting the pixel color in the screen
-            #  self.rayCasting(ray)
-                
-            # sleep(1)
-                print(sum_color)
-                sleep(1)
+                            
                 sum_color /= num_samples
-                print(sum_color*255)
-                screen.set_pixel_color(i, j, self.rayCasting(ray)*255)
-                        
-        
+                screen.set_pixel_color(i, j, sum_color*255)
         return screen
 
     def rayCasting(self, ray: Ray) -> list:
         
         _, intersection, object = self.find_intersection(ray)
-        # print(object)
-        print(intersection)
         if not intersection:
             return self.BACKGROUND_COLOR
         else:
