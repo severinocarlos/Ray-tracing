@@ -3,7 +3,7 @@ from math import hypot, inf, sqrt
 from modules.ray import Ray
 from modules.image import Image
 import random
-from time import sleep
+from time import sleep 
 
 class Build:
     def __init__(self, scene_dict: dict) -> None:
@@ -42,20 +42,24 @@ class Build:
         # calculating Q[0][0] = C + (1/2 * s(n-1) * v) - (1/2 * s(m-1) * u)
         pixel_center_00 = screen_center + self.PIXEL_SIZE * (((self.HEIGHT / 2) * v) - ((self.WIDTH / 2) * u))
         
-        num_samples = 64    
+        num_samples = 25    
         n = int(sqrt(num_samples))
-        # computing the rays direction
+        px = self.PIXEL_SIZE / num_samples * 2
 
+        # computing the rays direction
         for i in range(self.HEIGHT):
             for j in range(self.WIDTH):
                 sum_color = np.array([0.0,0.0,0.0])
+                random_point = np.array([0.0,0.0,0.0])
+                current_position = pixel_center_00 + self.PIXEL_SIZE * (j * u - i * v)
                 
+                # Antialiasing
                 for c in range(n):
                     for r in range(n):
-                        current_position = pixel_center_00 + self.PIXEL_SIZE * (((r + random.random()) * u) - ((c + random.random()) * v))
-                        ray_direction = current_position - cam_eye  # alter
+                        sub_pixel = current_position + self.PIXEL_SIZE/2 * (1 - 1 / n) * (v - u)
+                        current_sub_pixel =  sub_pixel + self.PIXEL_SIZE / 2 * ((r + self.rand_float(px)) * u - (c + self.rand_float(px)) * v)
+                        ray_direction = current_sub_pixel - cam_eye  # alter
                         ray_direction = normalize(ray_direction, norm(*ray_direction))
-                        
                         ray = Ray(ray_direction, cam_eye)
                         
                         # setting the pixel color in the screen
