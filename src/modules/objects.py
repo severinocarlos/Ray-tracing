@@ -151,3 +151,4 @@ class Triangle(Object):
         normalize = lambda a, b: a / b
         
         return normalize(self.v_normal, norm(*self.v_normal))
+
