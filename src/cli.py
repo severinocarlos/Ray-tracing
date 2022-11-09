@@ -19,7 +19,7 @@ def cli() -> str:
 def readinfo(_file: str) -> dict:
     directory = os.getcwd()
     
-    path = f'{directory}\\inputs\\version-2\\{_file}'
+    path = f'{directory}\\inputs\\{_file}'
     with open(path, 'r') as json_file:
         info = json.load(json_file)
     
