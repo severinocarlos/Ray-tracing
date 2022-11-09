@@ -2,7 +2,8 @@ import argparse
 import json
 import os
 from build import Build
-from modules.scene import Scene
+from modules.elements import set_elements
+from modules.image import Image
 
 def cli() -> str:
     parser = argparse.ArgumentParser()
@@ -15,9 +16,10 @@ def cli() -> str:
 
     return _file
 
-def readinfo(_file: str) -> dict():
+def readinfo(_file: str) -> dict:
     directory = os.getcwd()
-    path = f'{directory}\\images-info\\{_file}'
+    
+    path = f'{directory}\\inputs\\{_file}'
     with open(path, 'r') as json_file:
         info = json.load(json_file)
     
@@ -25,5 +27,16 @@ def readinfo(_file: str) -> dict():
 
 if __name__ == "__main__":
     file: str = cli()
-    scene_info: dict = readinfo(file)   
-    pixel_screen = Build(scene_info)
+    scene_info: dict = readinfo(file)
+    
+    # setting object and info in the scene
+    objects, lights = set_elements(scene_info['objects'], scene_info['lights'])
+    scene_info['object_list'] = objects
+    scene_info['lights'] = lights
+    
+    scene = Build(scene_info)
+    # building scene elements
+    image: Image = scene.render_scene()
+    # draw the image
+    image.draw_image(file)
+    
