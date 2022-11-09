@@ -22,7 +22,7 @@ def set_elements(objects, lights):
     
     # setting lights
     for values in lights:
-        new_light = Light(np.array(values['intensity'])/255, values['position'])
+        new_light = Light(np.array(values['intensity'])/255, np.array(values['position']), np.array(values['v1']), np.array(values['v2']), np.array(values['v3']), np.array(values['v4']))
         light_list.append(new_light)
 
     return (object_list, light_list)

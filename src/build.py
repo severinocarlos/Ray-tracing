@@ -1,9 +1,9 @@
 import numpy as np
-from math import hypot, inf
+from math import hypot, inf, sqrt
 from modules.ray import Ray
 from modules.image import Image
 from modules.light import Light
-
+from random import uniform
 class Build:
     def __init__(self, scene_dict: dict) -> None:
         self.HEIGHT: int = scene_dict['v_res']
@@ -54,7 +54,8 @@ class Build:
                 # setting the pixel color in the screen
                 color = np.array(self.cast(ray))
                 color = color*255 / max(1, *color)
-                screen.set_pixel_color(i, j, color)        
+                screen.set_pixel_color(i, j, color)
+            print(f'{i * j} - {self.HEIGHT * self.WIDTH}', end= '\r')     
         return screen
 
     def cast(self, ray: Ray) -> list:
@@ -87,27 +88,55 @@ class Build:
         norm = lambda x, y, z : hypot(x,y,z)
         normalize = lambda a, b: a / b
 
+        num_samples = 25
+        n = int(sqrt(num_samples))
+        px = 40 / num_samples * 2
+        
         for light in self.lights:
-            to_light = np.array(light.position - _P)
-            to_light = normalize(to_light, norm(*to_light))
-            r = self.reflect(to_light, _n)
+            
+            light_center = light.position
+            u = np.array(light.a2 - light.a4)
+            v = np.array(light.a3 - light.a4)
+            u = normalize(u, norm(*u))
+            v = normalize(v, norm(*v))
+            
+            height = 200
+            width = 200
+            pixel_size = 40
 
-            object_point =  _P + (0.00001 * to_light)
-            shadow_ray = Ray(origin=object_point, direction=to_light)
-            t, intersection, _ = self.find_intersection(shadow_ray) # testing for each object
+            # pixel_center_00 = screen_center + self.PIXEL_SIZE * (((self.HEIGHT - 1)/2) * v - ((self.WIDTH - 1)/2) * u)
+            pixel_center_00 =  light_center + pixel_size * (((height - 1)/2) * v - ((width - 1)/2) * u)
+            
+            for i in range(height):
+                for j in range(width):
+                    current_position = pixel_center_00 + pixel_size * (j * u - i * v)
+                    # soft shadows ?
+                    for c in range(n):
+                        for r in range(n):
+                            sub_pixel = current_position + pixel_size / 2 * (1 - 1 / n) * (v - u)
+                            current_sub_pixel =  sub_pixel + pixel_size / 2 * ((r + self.rand_float(px)) * u - (c + self.rand_float(px)) * v)
+                            to_light = current_sub_pixel - _P 
+                            to_light = normalize(to_light, norm(*to_light))    
+                            r = self.reflect(to_light, _n)
 
-            if not intersection or np.dot(to_light, light.position - object_point) < t:
-                # diffuse
-                if np.dot(_n, to_light) > 0:
-                    cp += np.multiply(_object.kd * _object.color, light.intensity * np.dot(_n, to_light))
+                            object_point =  _P + (0.00001 * to_light)
+                            shadow_ray = Ray(origin=object_point, direction=to_light)
+                            t, intersection, _ = self.find_intersection(shadow_ray) # testing for each object
 
-                # specular
-                if np.dot(_v, r) > 0:
-                    cp += _object.ks * ((np.dot(_v, r) ** _object.exp) * light.intensity)
-    
+                            if not intersection or np.dot(to_light, light.position - object_point) < t:
+                                # diffuse
+                                if np.dot(_n, to_light) > 0:
+                                    cp += np.multiply(_object.kd * _object.color, light.intensity * np.dot(_n, to_light))
+
+                                # specular
+                                if np.dot(_v, r) > 0:
+                                    cp += _object.ks * ((np.dot(_v, r) ** _object.exp) * light.intensity)
+                    cp /= num_samples
         return cp
 
     def reflect(self, _l, _n):
         return 2 * np.dot(_n,_l) * _n - _l
-       
+
+    def rand_float(self, px) -> float:
+        return uniform(-px, px)
 
