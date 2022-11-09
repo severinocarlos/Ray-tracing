@@ -77,18 +77,6 @@ class Plane(Object):
                 return distance
                 
         return inf
-        
-        # v = np.dot(ray.direction, self.v_normal) 
-        # EPSLON = 0.0000001
-
-        # if abs(v) > EPSLON:
-        #     print(self.point, ray.origin, self.v_normal)
-        #     h = np.dot(self.point - ray.origin, self.v_normal)
-        #     print(h, v)
-        #     t_parameter = h / v
-        #     return inf if t_parameter < 0 else t_parameter
-        # else:
-        #     return inf
     
     def normal(self, _):
         norm = lambda x, y, z : hypot(x,y,z)
