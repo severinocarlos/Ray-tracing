@@ -60,7 +60,7 @@ class Build:
                         # setting the pixel color in the screen
                         sum_color += self.rayCasting(ray)
                             
-                sum_color /= num_samples
+                sum_color /= 10
                 screen.set_pixel_color(i, j, sum_color*255)
         return screen
 
