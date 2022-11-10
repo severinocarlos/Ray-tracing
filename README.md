@@ -20,16 +20,16 @@ python cli.py -j espelho-0.json
 
 ```
 
-## Branchs:
+### BRANCHS:
 
 # Version-1:
-<blockquote>Image rendering using ray casting only: [Ray-Casting] https://pt.wikipedia.org/wiki/Ray_casting</blockquote>
+<blockquote>Image rendering using ray casting only</blockquote>
 
 # Version-2:
-<blockquote>Image rendering using shading and shadows: [Shading and shadows] https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/ligth-and-shadows</blockquote>
+<blockquote>Image rendering using shading and shadows</blockquote>
  
 # Version-3:
-<blockquote>Image rendering using recursive Ray-Tracing: [Ray-Tracing] https://github.com/vladotrocol/Graphics/blob/master/Ray%20Tracing%20From%20The%20Ground%20Up.pdf</blockquote>
+<blockquote>Image rendering using recursive Ray-Tracing</blockquote>
 
 # Antialiasing:
 <blockquote>Image rendering using only ray casting application of antialiasing technique (jittered sampling)</blockquote>
