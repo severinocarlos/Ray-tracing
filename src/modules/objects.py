@@ -71,12 +71,15 @@ class Plane(Object):
 
     def intersect(self, ray: Ray):
         
-        if abs(np.dot(self.v_normal,ray.direction)) >= 0.001:
-            distance = np.dot(self.v_normal, self.point - ray.origin) / np.dot(self.v_normal, ray.direction)
-            if distance > 0.001:
-                return distance
-                
-        return inf
+        v = np.dot(ray.direction, self.v_normal) 
+        EPSLON = 0.0000001
+
+        if abs(v) < EPSLON:
+            return inf
+        else:
+            h = np.dot(self.point - ray.origin, self.v_normal)
+            t_parameter = h / v
+            return inf if t_parameter < EPSLON else t_parameter
     
     def normal(self, _):
         norm = lambda x, y, z : hypot(x,y,z)
