@@ -34,6 +34,6 @@ $ python cli.py -j espelho-0.json
 ### Antialiasing:
 <blockquote>Image rendering using only ray casting application of antialiasing technique (jittered sampling)</blockquote>
 
-## Rendered image
+## Rendered image:
 ![alt text](https://github.com/severinocarlos/Ray-tracing/blob/main/src/outputs/newton_out.png)
 
