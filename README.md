@@ -20,7 +20,7 @@ $ python cli.py -j espelho-0.json
 
 ```
 
-## BRANCHS:
+## Branchs:
 
 ### version-1:
 <blockquote>Image rendering using ray casting only</blockquote>
