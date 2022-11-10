@@ -43,7 +43,8 @@ class Build:
         
         # calculating Q[0][0] = C + (1/2 * s(n-1) * v) - (1/2 * s(m-1) * u)
         pixel_center_00 = screen_center + self.PIXEL_SIZE * (((self.HEIGHT - 1)/2) * v - ((self.WIDTH - 1)/2) * u)
-        
+        progress = 1
+
         # computing the rays direction
         for i in range(self.HEIGHT):
             for j in range(self.WIDTH):
@@ -56,6 +57,7 @@ class Build:
                 color = np.array(self.cast(ray, self.max_depth))
                 color = color*255 / max(1, *color)
                 screen.set_pixel_color(i, j, color)
+            print(f'progress: {progress * (self.WIDTH / self.PIXEL_SIZE)} pixels  |  {self.WIDTH * self.HEIGHT / self.PIXEL_SIZE} pixels', end='\r')
         return screen
 
     def cast(self, ray: Ray, max_depth: int) -> list:
@@ -97,10 +99,8 @@ class Build:
             if min_intersection <= distance:
                 distance = min_intersection
                 current_object = object
-                # print(distance, current_object)
             isIntersection = True if distance != inf else False
-        # print('-'*40)
-        # sleep(1)
+
         return (distance, isIntersection, current_object)
     
     def shade(self, _object, _P, _v, _n):
@@ -116,7 +116,7 @@ class Build:
 
             object_point =  _P + (0.00001 * to_light)
             shadow_ray = Ray(origin=object_point, direction=to_light)
-            # print('chamei do cast')
+            
             t, intersection, _ = self.find_intersection(shadow_ray) # testing for each object
 
             if not intersection or np.dot(to_light, light.position - object_point) < t:
