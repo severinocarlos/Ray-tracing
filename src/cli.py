@@ -36,7 +36,7 @@ if __name__ == "__main__":
     
     scene = Build(scene_info)
     # building scene elements
-    image: Image = scene.buildRays()
+    image: Image = scene.render_scene()
     
     # draw the image
     image.draw_image(file)

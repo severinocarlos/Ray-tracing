@@ -16,7 +16,7 @@ class Build:
         self.OBJECTS: list = scene_dict['objects']
         self.objs: list = scene_dict['object_list']
         
-    def buildRays(self) -> Image:
+    def render_scene(self) -> Image:
         screen = Image(self.HEIGHT, self.WIDTH, self.BACKGROUND_COLOR) # creating a screen
 
         cam_eye = np.array(self.CAM_EYE)
