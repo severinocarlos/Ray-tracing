@@ -6,11 +6,11 @@
 # Clone this repository:
 $ git clone https://github.com/severinocarlos/Ray-tracing.git
 
-# Entry in Directory:
-$ cd src
-
 #  Install all requirements
 $ pip install -r requirements.txt
+
+# Entry in Directory:
+$ cd src
 
 # Run the code:
 $ python cli.py -j <file.json>
