@@ -15,7 +15,7 @@ $ cd src
 # Run the code:
 $ python cli.py -j <file.json>
 
-E.g - using a version-3 (you can choose the image to be rendered by looking at the inputs folder): 
+E.g - using the version-3 (you can choose the image to be rendered by looking at the inputs folder): 
 $ python cli.py -j espelho-0.json
 
 ```
